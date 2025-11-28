@@ -8,7 +8,7 @@ import { Lock, Unlock } from 'lucide-react';
 const PASSWORDS = ['seul', '1315'];
 const HASH_KEYS = ['#seul', '#1315'];
 
-const LoginScreen: React.FC<{ onSuccess: () => void; unlocking?: boolean }> = ({ onSuccess, unlocking }) => {
+const LoginScreen: React.FC<{ onSuccess: () => void; unlocking?: boolean; devMode?: boolean }> = ({ onSuccess, unlocking, devMode }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [showLogin, setShowLogin] = useState(!unlocking);
@@ -19,14 +19,19 @@ const LoginScreen: React.FC<{ onSuccess: () => void; unlocking?: boolean }> = ({
   // 처음 마운트 시 페이드인
   useEffect(() => {
     if (unlocking) {
-      // 해시로 접속 시 바로 성공 화면
-      setShowLogin(false);
-      setShowSuccess(true);
-      setTimeout(() => setSuccessVisible(true), 50);
+      // 해시로 접속 시 로그인창 잠깐 보여주고 성공 화면
+      setTimeout(() => setShowLogin(true), 50);
       setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(() => onSuccess(), 500);
-      }, 1500);
+        setShowLogin(false);
+        setTimeout(() => {
+          setShowSuccess(true);
+          setTimeout(() => setSuccessVisible(true), 30);
+          setTimeout(() => {
+            setFadeOut(true);
+            setTimeout(() => onSuccess(), 300);
+          }, 1000);
+        }, 200);
+      }, 1000);
     } else {
       setTimeout(() => setShowLogin(true), 50);
     }
@@ -106,11 +111,11 @@ const LoginScreen: React.FC<{ onSuccess: () => void; unlocking?: boolean }> = ({
           {/* 체크마크 애니메이션 */}
           <div className="relative mb-8">
             {/* 배경 원 - 펄스 효과 */}
-            <div className="absolute inset-0 w-24 h-24 rounded-2xl bg-gradient-to-tr from-primary to-secondary animate-ping opacity-20" />
-            <div className="absolute inset-0 w-24 h-24 rounded-2xl bg-gradient-to-tr from-primary to-secondary animate-pulse opacity-30" />
+            <div className="absolute inset-0 w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-secondary animate-ping opacity-20" />
+            <div className="absolute inset-0 w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-secondary animate-pulse opacity-30" />
 
             {/* 메인 원 */}
-            <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-2xl shadow-primary/40">
+            <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-2xl shadow-primary/40">
               {/* 체크마크 SVG 애니메이션 */}
               <svg
                 className="w-12 h-12 text-white"
@@ -142,11 +147,11 @@ const LoginScreen: React.FC<{ onSuccess: () => void; unlocking?: boolean }> = ({
           <div className="text-center">
             <h1 className="text-2xl font-bold text-white mb-2 animate-fade-in"
                 style={{ animation: 'fadeSlideUp 0.3s ease-out 0.2s both' }}>
-              인증 완료!
+              {devMode ? 'DEV MODE' : '인증 완료!'}
             </h1>
             <p className="text-slate-400"
                style={{ animation: 'fadeSlideUp 0.3s ease-out 0.3s both' }}>
-              환영합니다
+              {devMode ? 'Access Granted' : '환영합니다'}
             </p>
           </div>
 
@@ -188,27 +193,41 @@ const App: React.FC = () => {
   const [isUnlockingByHash, setIsUnlockingByHash] = useState(false);
 
   useEffect(() => {
-    const checkAuth = () => {
-      const hash = window.location.hash;
+    const hash = window.location.hash;
 
-      if (HASH_KEYS.includes(hash)) {
+    // 해시로 접속한 경우
+    if (HASH_KEYS.includes(hash)) {
+      localStorage.setItem('authenticated', 'true');
+      localStorage.setItem('devMode', 'true');
+      history.replaceState(null, '', window.location.pathname);
+      window.location.reload();
+      return;
+    }
+
+    // 새로고침 후 devMode 플래그 확인
+    if (localStorage.getItem('devMode') === 'true') {
+      localStorage.removeItem('devMode');
+      setIsUnlockingByHash(true);
+      setIsLoading(false);
+    } else if (localStorage.getItem('authenticated') === 'true') {
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+
+    // 해시 변경 감지
+    const handleHashChange = () => {
+      if (HASH_KEYS.includes(window.location.hash)) {
         localStorage.setItem('authenticated', 'true');
-        window.location.hash = '';
-        setIsUnlockingByHash(true);
-        setIsLoading(false);
-      } else if (localStorage.getItem('authenticated') === 'true') {
-        setIsAuthenticated(true);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
+        localStorage.setItem('devMode', 'true');
+        history.replaceState(null, '', window.location.pathname);
+        window.location.reload();
       }
     };
 
-    checkAuth();
-
-    // 해시 변경 감지
-    window.addEventListener('hashchange', checkAuth);
-    return () => window.removeEventListener('hashchange', checkAuth);
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   if (isLoading) {
@@ -220,7 +239,7 @@ const App: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <LoginScreen onSuccess={() => setIsAuthenticated(true)} unlocking={isUnlockingByHash} />;
+    return <LoginScreen onSuccess={() => setIsAuthenticated(true)} unlocking={isUnlockingByHash} devMode={isUnlockingByHash} />;
   }
 
   return (
