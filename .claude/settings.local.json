@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(dir \"C:\\Users\\user\\Downloads\\ch4n-devhub\\dist\")",
+      "Bash(dir \"C:\\Users\\user\\Downloads\\ch4n-devhub\\dist\\assets\")",
+      "Bash(dir \"C:\\Users\\user\\Downloads\\ch4n-devhub\\public\")",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
