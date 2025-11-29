@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Briefcase,
   Cpu,
   Menu,
   X,
@@ -12,7 +11,6 @@ import {
 
 const NAV_ITEMS = [
   { label: '대시보드', path: '/', icon: LayoutDashboard },
-  { label: '포트폴리오', path: 'https://ch4n.co.kr/portfolio', icon: Briefcase, external: true },
   { label: '환율 계산기', path: '/currency', icon: Wallet },
   { label: 'Gemini API', path: '/gemini', icon: Cpu },
 ];

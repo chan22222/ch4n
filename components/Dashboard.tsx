@@ -4,28 +4,15 @@ import {
   Cpu,
   Clock,
   Globe,
-  Server,
   Monitor,
   Wifi,
   ArrowRight,
   ShieldCheck,
   Zap,
-  Layout,
   ExternalLink,
 } from 'lucide-react';
 
 const SYSTEM_MODULES = [
-  {
-    id: 'portfolio',
-    name: '포트폴리오',
-    desc: '개인 작업물 아카이브',
-    status: 'Active',
-    path: 'https://ch4n.co.kr/portfolio',
-    icon: Server,
-    color: 'text-blue-400',
-    bg: 'bg-blue-400/10',
-    external: true
-  },
   {
     id: 'currency',
     name: '환율 계산기',
@@ -127,17 +114,8 @@ const Dashboard: React.FC = () => {
                 </h1>
                 <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed">
                   DevHub 통합 제어 센터에 오신 것을 환영합니다.
-                  이곳에서 포트폴리오, 환율 계산기, 마케팅 도구 등 모든 서브 시스템을 모니터링하고 제어할 수 있습니다.
+                  이곳에서 환율 계산기, 마케팅 도구 등 모든 서브 시스템을 모니터링하고 제어할 수 있습니다.
                 </p>
-              </div>
-              <div className="flex gap-3 shrink-0">
-                <a href="https://ch4n.co.kr/portfolio" target="_blank" rel="noopener noreferrer" className="bg-primary hover:bg-primary/90 text-white px-5 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-primary/20">
-                  <Layout size={18} />
-                  포트폴리오
-                </a>
-                <a href="https://ch4n.co.kr/portfolio/#contact" target="_blank" rel="noopener noreferrer" className="bg-slate-700 hover:bg-slate-600 text-white px-5 py-3 rounded-xl font-semibold transition-colors border border-slate-600">
-                  문의하기
-                </a>
               </div>
             </div>
           </div>
