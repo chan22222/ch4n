@@ -2,18 +2,9 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Cpu,
   Menu,
   X,
-  Wallet,
-  ExternalLink
 } from 'lucide-react';
-
-const NAV_ITEMS = [
-  { label: '대시보드', path: '/', icon: LayoutDashboard },
-  { label: '환율 계산기', path: '/currency', icon: Wallet },
-  { label: 'Gemini API', path: '/gemini', icon: Cpu },
-];
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -59,48 +50,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         <nav className="px-4 py-2 space-y-1 flex-1 overflow-y-auto">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isExternal = 'external' in item && item.external;
-            const isActive = !isExternal && location.pathname === item.path;
-            const baseClasses = `
+          <NavLink
+            to="/"
+            onClick={() => setIsSidebarOpen(false)}
+            className={`
               flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
-              ${isActive
+              ${location.pathname === '/'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
-            `;
-
-            if (isExternal) {
-              return (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsSidebarOpen(false)}
-                  className={baseClasses}
-                >
-                  <Icon size={18} className="text-slate-500 group-hover:text-slate-300" />
-                  <span className="font-medium text-sm">{item.label}</span>
-                  <ExternalLink size={14} className="ml-auto text-slate-500 group-hover:text-slate-300" />
-                </a>
-              );
-            }
-
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsSidebarOpen(false)}
-                className={baseClasses}
-              >
-                <Icon size={18} className={isActive ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} />
-                <span className="font-medium text-sm">{item.label}</span>
-                {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
-              </NavLink>
-            );
-          })}
+            `}
+          >
+            <LayoutDashboard size={18} className={location.pathname === '/' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} />
+            <span className="font-medium text-sm">대시보드</span>
+            {location.pathname === '/' && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+          </NavLink>
         </nav>
 
         <div className="p-6 shrink-0">
@@ -135,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
         </header>
 
-        <div className="flex-1 overflow-hidden relative w-full h-full bg-background">
+        <div className="flex-1 overflow-auto relative w-full h-full bg-background">
           {children}
         </div>
       </main>

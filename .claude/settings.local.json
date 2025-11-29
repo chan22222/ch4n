@@ -13,7 +13,9 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(npm run dev)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(del \"C:\\Users\\CHAN2\\Music\\cord\\ch4n\\components\\NetworkSpeed.tsx\")",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
