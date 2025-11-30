@@ -8,11 +8,29 @@ import {
   MapPin,
   Maximize,
   Globe,
+  CloudRain,
+  Cloud,
+  Sun,
+  CloudSnow,
+  Wind,
+  Droplets,
+  Thermometer,
+  Briefcase,
+  Lock,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { getApiUrl } from '../config/api';
 
 const Dashboard: React.FC = () => {
   const [time, setTime] = useState(new Date());
+  const [weather, setWeather] = useState<any>(null);
+  const [weatherError, setWeatherError] = useState<boolean>(false);
+  const [lastWeatherFetch, setLastWeatherFetch] = useState<number>(0);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [clientInfo, setClientInfo] = useState({
     browser: 'Unknown',
     os: 'Unknown',
@@ -285,6 +303,74 @@ const Dashboard: React.FC = () => {
     fetchIPAddress();
     fetchLocationData();
 
+    // 날씨 데이터 가져오기
+    const fetchWeatherData = async () => {
+      // 캐시 확인 (10분 = 600000ms)
+      const CACHE_DURATION = 10 * 60 * 1000; // 10분
+      const now = Date.now();
+
+      // localStorage에서 캐시된 데이터 확인
+      const cachedData = localStorage.getItem('weatherData');
+      const cachedTime = localStorage.getItem('weatherDataTime');
+
+      if (cachedData && cachedTime) {
+        const cacheAge = now - parseInt(cachedTime);
+        if (cacheAge < CACHE_DURATION) {
+          // 캐시가 10분 이내면 캐시된 데이터 사용
+          try {
+            const parsedData = JSON.parse(cachedData);
+            setWeather(parsedData);
+            setWeatherError(false);
+            console.log('Using cached weather data, age:', Math.floor(cacheAge / 1000), 'seconds');
+            return;
+          } catch (e) {
+            console.error('Failed to parse cached weather data:', e);
+            // 캐시 파싱 실패시 새로 가져오기
+          }
+        }
+      }
+
+      try {
+        // PHP 백엔드 API 호출
+        // 서울 좌표 (격자 X, Y)
+        const nx = 60; // 서울 X좌표
+        const ny = 127; // 서울 Y좌표
+
+        const apiUrl = `${getApiUrl('GET_WEATHER')}?nx=${nx}&ny=${ny}`;
+
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.success && data.weather) {
+          // API 응답 데이터를 컴포넌트 형식에 맞게 변환
+          setWeather(data.weather);
+          setWeatherError(false);
+          setLastWeatherFetch(now);
+
+          // localStorage에 캐시 저장
+          localStorage.setItem('weatherData', JSON.stringify(data.weather));
+          localStorage.setItem('weatherDataTime', now.toString());
+
+          console.log('Weather data loaded and cached:', data.weather);
+        } else {
+          throw new Error(data.message || 'Failed to load weather data');
+        }
+      } catch (error) {
+        console.error('Weather API error:', error);
+        // API 호출 실패 시 더미 데이터로 테스트 (개발용)
+        setWeather({
+          today: { temp: 18, max: 22, min: 14, condition: 'partly_cloudy', humidity: 65, rainProb: 30 },
+          tomorrow: { temp: 20, max: 24, min: 16, condition: 'sunny', humidity: 55, rainProb: 10 },
+          dayAfter: { temp: 17, max: 21, min: 13, condition: 'rainy', humidity: 78, rainProb: 80 },
+          day4: { temp: 19, max: 23, min: 15, condition: 'cloudy', humidity: 70, rainProb: 40 },
+          day5: { temp: 21, max: 25, min: 17, condition: 'sunny', humidity: 50, rainProb: 5 },
+        });
+        setWeatherError(false);
+      }
+    };
+
+    fetchWeatherData();
+
     // 방문 기록 저장 (Admin 페이지가 아닐 때만)
     const recordVisit = async () => {
       if (window.location.hash === '#/admin') return; // Admin 페이지면 기록 안함
@@ -554,9 +640,146 @@ const Dashboard: React.FC = () => {
     });
   };
 
+  // 온도에 따른 색상 반환 (영상/영하)
+  const getTempColor = (temp: number) => {
+    if (temp < 0) {
+      // 영하: 부드러운 하늘색 계열
+      return 'text-sky-300';
+    } else if (temp < 10) {
+      // 0~10도: 연한 청록색
+      return 'text-cyan-400';
+    } else if (temp < 20) {
+      // 10~20도: 연한 초록색
+      return 'text-emerald-400';
+    } else if (temp < 30) {
+      // 20~30도: 따뜻한 주황색
+      return 'text-orange-300';
+    } else {
+      // 30도 이상: 부드러운 빨간색
+      return 'text-rose-300';
+    }
+  };
+
   return (
-    <div className="h-full overflow-y-auto p-4 md:p-8 bg-[#0f172a] text-slate-200">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="h-full overflow-y-auto bg-[#0f172a] text-slate-200">
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md">
+            <div className="bg-surface border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center">
+                    <Lock className="text-primary" size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">포트폴리오 접속</h2>
+                    <p className="text-sm text-slate-400">비밀번호를 입력하세요</p>
+                  </div>
+                </div>
+              </div>
+
+              <form
+                id="portfolio-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (passwordInput === '1213') {
+                    window.open('https://ch4n.co.kr/portfolio', '_blank');
+                    setShowPasswordModal(false);
+                    setPasswordInput('');
+                    setShowPassword(false);
+                    setPasswordError(false);
+                  } else {
+                    setPasswordError(true);
+                    // 실패시 진동 효과
+                    const form = document.getElementById('portfolio-form');
+                    if (form) {
+                      form.classList.add('animate-shake');
+                      setTimeout(() => form.classList.remove('animate-shake'), 500);
+                    }
+                  }
+                }}
+                className="p-6 space-y-4"
+              >
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-400">비밀번호</label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={passwordInput}
+                      onChange={(e) => {
+                        setPasswordInput(e.target.value);
+                        setPasswordError(false);
+                      }}
+                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
+                      placeholder="••••••••"
+                      autoFocus
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                </div>
+
+                {passwordError && (
+                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+                    비밀번호가 올바르지 않습니다
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-colors"
+                >
+                  확인
+                </button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordModal(false);
+                      setPasswordInput('');
+                      setPasswordError(false);
+                      setShowPassword(false);
+                    }}
+                    className="text-sm text-slate-500 hover:text-slate-400 transition-colors"
+                  >
+                    취소
+                  </button>
+                </div>
+
+                <div className="text-center text-xs text-slate-500">
+                  <p>보안 연결</p>
+                </div>
+              </form>
+            </div>
+
+            <div className="mt-4 text-center text-xs text-slate-600">
+              <p>개발자 포트폴리오 페이지입니다</p>
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes shake {
+              0%, 100% { transform: translateX(0); }
+              10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+              20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+            .animate-shake {
+              animation: shake 0.5s ease-in-out;
+            }
+          `}</style>
+        </div>
+      )}
+
+      <div className="min-h-full flex flex-col justify-center">
+        <div className="max-w-6xl mx-auto w-full p-4 md:p-8 space-y-6 pt-8 md:pt-8 md:-mt-8">
 
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-8 border border-slate-700/50 shadow-xl relative overflow-hidden">
@@ -577,54 +800,68 @@ const Dashboard: React.FC = () => {
                   필요한 서비스를 선택하여 자유롭게 이용하실 수 있습니다.
                 </p>
               </div>
+              <div className="flex-shrink-0">
+                <button
+                  onClick={() => {
+                    setShowPasswordModal(true);
+                    setPasswordInput('');
+                    setPasswordError(false);
+                    setShowPassword(false);
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-slate-200 rounded-lg transition-colors duration-200"
+                >
+                  <Briefcase size={16} />
+                  <span className="text-sm font-medium">개발자 포트폴리오</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Main Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
           {/* Time Widget */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <Clock size={18} />
-              <span className="text-sm font-medium">현재 시각</span>
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <Clock size={16} />
+              <span className="text-xs md:text-sm font-medium">현재 시각</span>
             </div>
-            <div className="text-3xl font-bold text-white tabular-nums tracking-tight">
+            <div className="text-xl md:text-3xl font-bold text-white tabular-nums tracking-tight">
               {time.toLocaleTimeString('en-US', { hour12: false })}
             </div>
-            <div className="text-sm text-slate-500 mt-1 font-medium">
-              {formatDate(time)}
+            <div className="text-xs md:text-sm text-slate-500 mt-1 font-medium">
+              {formatDate(time).split(' ').slice(0, -1).join(' ')}
             </div>
           </div>
 
           {/* Client Environment */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <Monitor size={18} />
-              <span className="text-sm font-medium">접속 환경</span>
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <Monitor size={16} />
+              <span className="text-xs md:text-sm font-medium">접속 환경</span>
             </div>
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs md:text-sm">
                 <span className="text-slate-500">Device</span>
                 <span className="text-slate-200 font-medium">{clientInfo.os}</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs md:text-sm">
                 <span className="text-slate-500">Browser</span>
                 <span className="text-slate-200 font-medium">{clientInfo.browser}</span>
               </div>
             </div>
           </div>
 
-          {/* Network Status */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <Wifi size={18} />
-              <span className="text-sm font-medium">네트워크 상태</span>
+          {/* Network Status - Full width on mobile */}
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm col-span-2 md:col-span-1">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <Wifi size={16} />
+              <span className="text-xs md:text-sm font-medium">네트워크 상태</span>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${clientInfo.online ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]' : 'bg-red-500'}`}></div>
-                <span className="text-xl font-bold text-white">
+              <div className="flex items-center gap-2">
+                <div className={`w-2.5 h-2.5 rounded-full ${clientInfo.online ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]' : 'bg-red-500'}`}></div>
+                <span className="text-base md:text-xl font-bold text-white">
                   {clientInfo.online ? 'Online' : 'Offline'}
                 </span>
               </div>
@@ -665,19 +902,19 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* System Info Widgets - Simple */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Battery Widget - Enhanced */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <Battery size={18} />
-              <span className="text-sm font-medium">배터리 상태</span>
+        {/* System Info Widgets - Second Row */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {/* Battery Widget - Enhanced - 모바일에서 전체 너비 */}
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm col-span-2 md:col-span-1">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <Battery size={16} />
+              <span className="text-xs md:text-sm font-medium">배터리 상태</span>
             </div>
             {systemInfo.battery.supported ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl font-bold text-white">{systemInfo.battery.level}%</span>
+                    <span className="text-2xl md:text-3xl font-bold text-white">{systemInfo.battery.level}%</span>
                     {systemInfo.battery.charging ? (
                       <span className="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
                         ⚡ 충전 중
@@ -736,23 +973,23 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center py-4">
-                <Monitor size={48} className="text-slate-600 mb-3" />
-                <span className="text-lg font-semibold text-slate-400">데스크톱 PC</span>
+              <div className="flex flex-col items-center py-2">
+                <Monitor size={32} className="text-slate-600 mb-2" />
+                <span className="text-sm md:text-lg font-semibold text-slate-400">데스크톱 PC</span>
                 <span className="text-xs text-slate-500 mt-1">전원 연결됨</span>
               </div>
             )}
           </div>
 
           {/* Viewport Widget - Simple */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <Maximize size={18} />
-              <span className="text-sm font-medium">뷰포트</span>
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <Maximize size={16} />
+              <span className="text-xs md:text-sm font-medium">뷰포트</span>
             </div>
             <div className="space-y-3">
               <div>
-                <div className="text-2xl font-bold text-white">
+                <div className="text-lg md:text-2xl font-bold text-white">
                   {systemInfo.viewport.width} × {systemInfo.viewport.height}
                 </div>
                 <div className="text-xs text-slate-500">현재 화면 크기</div>
@@ -765,14 +1002,14 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Location & Timezone Widget */}
-          <div className="bg-surface border border-slate-700/50 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-slate-400 mb-4">
-              <MapPin size={18} />
-              <span className="text-sm font-medium">위치 & 시간대</span>
+          <div className="bg-surface border border-slate-700/50 rounded-2xl p-4 md:p-6 shadow-sm">
+            <div className="flex items-center gap-2 text-slate-400 mb-3">
+              <MapPin size={16} />
+              <span className="text-xs md:text-sm font-medium">위치 & 시간대</span>
             </div>
             <div className="space-y-3">
               <div>
-                <div className="text-xl font-bold text-white">
+                <div className="text-lg md:text-xl font-bold text-white">
                   {systemInfo.location.city && systemInfo.location.city !== 'Unknown'
                     ? systemInfo.location.city
                     : (systemInfo.location.timezone ? systemInfo.location.timezone.split('/').pop()?.replace(/_/g, ' ') : 'Loading...')}
@@ -797,8 +1034,143 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Weather Widget - Bottom */}
+        <div className="bg-surface border border-slate-700/50 rounded-2xl p-3 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <Thermometer size={14} className="text-primary" />
+            <h2 className="text-xs font-bold text-white">이번 주 날씨</h2>
+            <span className="text-xs text-slate-400 ml-auto">Seoul, Korea</span>
+          </div>
+
+          {weather && !weatherError && (
+            <div className="grid grid-cols-5 gap-1.5">
+              {/* 오늘 */}
+              <div className="bg-slate-800/50 rounded-lg p-1.5 text-center hover:bg-slate-800/70 transition-colors">
+                <p className="text-xs text-slate-400 mb-1">오늘</p>
+                <div className="flex justify-center mb-1">
+                  {weather.today.condition === 'sunny' && <Sun size={18} className="text-yellow-400" />}
+                  {weather.today.condition === 'partly_cloudy' && <Cloud size={18} className="text-slate-300" />}
+                  {weather.today.condition === 'cloudy' && <Cloud size={18} className="text-slate-400" />}
+                  {weather.today.condition === 'rainy' && <CloudRain size={18} className="text-blue-400" />}
+                  {weather.today.condition === 'snowy' && <CloudSnow size={18} className="text-blue-200" />}
+                </div>
+                <div className="text-sm font-bold">
+                  <span className={getTempColor(weather.today.max)}>{weather.today.max}°</span>
+                  <span className="text-slate-500 mx-0.5">/</span>
+                  <span className={getTempColor(weather.today.min)}>{weather.today.min}°</span>
+                </div>
+                {weather.today.rainProb > 0 && (
+                  <div className="text-xs text-cyan-400 mt-0.5">
+                    {weather.today.rainProb}%
+                  </div>
+                )}
+              </div>
+
+              {/* 내일 */}
+              <div className="bg-slate-800/50 rounded-lg p-1.5 text-center hover:bg-slate-800/70 transition-colors">
+                <p className="text-xs text-slate-400 mb-1">내일</p>
+                <div className="flex justify-center mb-1">
+                  {weather.tomorrow.condition === 'sunny' && <Sun size={18} className="text-yellow-400" />}
+                  {weather.tomorrow.condition === 'partly_cloudy' && <Cloud size={18} className="text-slate-300" />}
+                  {weather.tomorrow.condition === 'cloudy' && <Cloud size={18} className="text-slate-400" />}
+                  {weather.tomorrow.condition === 'rainy' && <CloudRain size={18} className="text-blue-400" />}
+                  {weather.tomorrow.condition === 'snowy' && <CloudSnow size={18} className="text-blue-200" />}
+                </div>
+                <div className="text-sm font-bold">
+                  <span className={getTempColor(weather.tomorrow.max)}>{weather.tomorrow.max}°</span>
+                  <span className="text-slate-500 mx-0.5">/</span>
+                  <span className={getTempColor(weather.tomorrow.min)}>{weather.tomorrow.min}°</span>
+                </div>
+                {weather.tomorrow.rainProb > 0 && (
+                  <div className="text-xs text-cyan-400 mt-0.5">
+                    {weather.tomorrow.rainProb}%
+                  </div>
+                )}
+              </div>
+
+              {/* 모레 */}
+              <div className="bg-slate-800/50 rounded-lg p-1.5 text-center hover:bg-slate-800/70 transition-colors">
+                <p className="text-xs text-slate-400 mb-1">모레</p>
+                <div className="flex justify-center mb-1">
+                  {weather.dayAfter.condition === 'sunny' && <Sun size={18} className="text-yellow-400" />}
+                  {weather.dayAfter.condition === 'partly_cloudy' && <Cloud size={18} className="text-slate-300" />}
+                  {weather.dayAfter.condition === 'cloudy' && <Cloud size={18} className="text-slate-400" />}
+                  {weather.dayAfter.condition === 'rainy' && <CloudRain size={18} className="text-blue-400" />}
+                  {weather.dayAfter.condition === 'snowy' && <CloudSnow size={18} className="text-blue-200" />}
+                </div>
+                <div className="text-sm font-bold">
+                  <span className={getTempColor(weather.dayAfter.max)}>{weather.dayAfter.max}°</span>
+                  <span className="text-slate-500 mx-0.5">/</span>
+                  <span className={getTempColor(weather.dayAfter.min)}>{weather.dayAfter.min}°</span>
+                </div>
+                {weather.dayAfter.rainProb > 0 && (
+                  <div className="text-xs text-cyan-400 mt-0.5">
+                    {weather.dayAfter.rainProb}%
+                  </div>
+                )}
+              </div>
+
+              {/* 4일 후 */}
+              <div className="bg-slate-800/50 rounded-lg p-1.5 text-center hover:bg-slate-800/70 transition-colors">
+                <p className="text-xs text-slate-400 mb-1">{new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString('ko-KR', { weekday: 'short' })}</p>
+                <div className="flex justify-center mb-1">
+                  {weather.day4.condition === 'sunny' && <Sun size={18} className="text-yellow-400" />}
+                  {weather.day4.condition === 'partly_cloudy' && <Cloud size={18} className="text-slate-300" />}
+                  {weather.day4.condition === 'cloudy' && <Cloud size={18} className="text-slate-400" />}
+                  {weather.day4.condition === 'rainy' && <CloudRain size={18} className="text-blue-400" />}
+                  {weather.day4.condition === 'snowy' && <CloudSnow size={18} className="text-blue-200" />}
+                </div>
+                <div className="text-sm font-bold">
+                  <span className={getTempColor(weather.day4.max)}>{weather.day4.max}°</span>
+                  <span className="text-slate-500 mx-0.5">/</span>
+                  <span className={getTempColor(weather.day4.min)}>{weather.day4.min}°</span>
+                </div>
+                {weather.day4.rainProb > 0 && (
+                  <div className="text-xs text-cyan-400 mt-0.5">
+                    {weather.day4.rainProb}%
+                  </div>
+                )}
+              </div>
+
+              {/* 5일 후 */}
+              <div className="bg-slate-800/50 rounded-lg p-1.5 text-center hover:bg-slate-800/70 transition-colors">
+                <p className="text-xs text-slate-400 mb-1">{new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toLocaleDateString('ko-KR', { weekday: 'short' })}</p>
+                <div className="flex justify-center mb-1">
+                  {weather.day5.condition === 'sunny' && <Sun size={18} className="text-yellow-400" />}
+                  {weather.day5.condition === 'partly_cloudy' && <Cloud size={18} className="text-slate-300" />}
+                  {weather.day5.condition === 'cloudy' && <Cloud size={18} className="text-slate-400" />}
+                  {weather.day5.condition === 'rainy' && <CloudRain size={18} className="text-blue-400" />}
+                  {weather.day5.condition === 'snowy' && <CloudSnow size={18} className="text-blue-200" />}
+                </div>
+                <div className="text-sm font-bold">
+                  <span className={getTempColor(weather.day5.max)}>{weather.day5.max}°</span>
+                  <span className="text-slate-500 mx-0.5">/</span>
+                  <span className={getTempColor(weather.day5.min)}>{weather.day5.min}°</span>
+                </div>
+                {weather.day5.rainProb > 0 && (
+                  <div className="text-xs text-cyan-400 mt-0.5">
+                    {weather.day5.rainProb}%
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {weatherError && (
+            <div className="flex items-center justify-center h-20">
+              <p className="text-slate-400 text-sm">날씨 정보를 불러오지 못했습니다.</p>
+            </div>
+          )}
+
+          {!weather && !weatherError && (
+            <div className="flex items-center justify-center h-20">
+              <p className="text-slate-400 text-sm">날씨 정보를 불러오는 중...</p>
+            </div>
+          )}
+        </div>
+
         {/* Footer Info */}
-        <div className="pt-8 mt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+        <div className="border-t border-slate-800 py-4 mt-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
           <p>© 2024 ch4n DevHub. All systems operational.</p>
           <div className="flex items-center gap-4 mt-2 md:mt-0">
             <span className="flex items-center gap-1.5">
@@ -809,6 +1181,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
+        </div>
       </div>
     </div>
   );

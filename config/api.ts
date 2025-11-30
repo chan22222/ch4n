@@ -11,7 +11,8 @@ export const API_CONFIG = {
   // 엔드포인트
   ENDPOINTS: {
     SAVE_VISITOR: '/save-visitor.php',
-    GET_VISITORS: '/get-visitors.php'
+    GET_VISITORS: '/get-visitors.php',
+    GET_WEATHER: '/weather.php'
   },
 
   // 타임아웃 설정 (ms)
