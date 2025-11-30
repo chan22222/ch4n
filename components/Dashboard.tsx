@@ -797,7 +797,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-
         {/* Footer Info */}
         <div className="pt-8 mt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
           <p>© 2024 ch4n DevHub. All systems operational.</p>
