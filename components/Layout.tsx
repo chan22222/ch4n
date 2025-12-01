@@ -52,8 +52,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           fixed md:relative z-30 h-full bg-surface border-r border-slate-700/50
           transition-all duration-300 ease-in-out flex flex-col
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          w-64
           ${isDesktopCollapsed ? 'md:w-20' : 'md:w-64'}
-          ${!isDesktopCollapsed ? 'w-64' : 'w-20'}
           md:translate-x-0
         `}
       >
@@ -72,17 +72,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        <div className={`${isDesktopCollapsed ? 'md:p-4' : 'p-6'} flex items-center justify-between shrink-0`}>
-          <div className={`flex items-center ${isDesktopCollapsed ? 'md:justify-center md:w-full' : 'gap-3'}`}>
+        <div className={`p-6 ${isDesktopCollapsed ? 'md:p-4' : 'md:p-6'} flex items-center justify-between shrink-0`}>
+          <div className={`flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:w-full md:gap-0' : ''}`}>
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/20 shrink-0">
               C
             </div>
-            <div className={`transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'}`}>
+            <div className={`transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} hidden md:block`}>
               <h1 className="font-bold text-lg tracking-tight whitespace-nowrap">ch4n.co.kr</h1>
               <p className="text-xs text-slate-400 whitespace-nowrap">DevHub Suite</p>
             </div>
           </div>
-          <button onClick={toggleSidebar} className={`md:hidden text-slate-400 ${isDesktopCollapsed ? 'absolute right-4' : ''}`}>
+          <button onClick={toggleSidebar} className="md:hidden text-slate-400">
             <X size={24} />
           </button>
         </div>
@@ -90,9 +90,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <nav className="px-4 py-2 space-y-1 flex-1 overflow-y-auto">
           <NavLink
             to="/"
-            onClick={() => setIsSidebarOpen(false)}
             className={`
-              flex items-center ${isDesktopCollapsed ? 'md:justify-center' : 'gap-3'} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
               ${location.pathname === '/'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
@@ -101,16 +100,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             title={isDesktopCollapsed ? '대시보드' : ''}
           >
             <LayoutDashboard size={18} className={`${location.pathname === '/' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} whitespace-nowrap`}>대시보드</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>대시보드</span>
             {location.pathname === '/' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
 
           <NavLink
             to="/currency"
-            onClick={() => setIsSidebarOpen(false)}
             className={`
-              flex items-center ${isDesktopCollapsed ? 'md:justify-center' : 'gap-3'} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
               ${location.pathname === '/currency'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
@@ -119,16 +117,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             title={isDesktopCollapsed ? '환율 계산기' : ''}
           >
             <DollarSign size={18} className={`${location.pathname === '/currency' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} whitespace-nowrap`}>환율 계산기</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>환율 계산기</span>
             {location.pathname === '/currency' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/currency' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
 
           <NavLink
             to="/gemini"
-            onClick={() => setIsSidebarOpen(false)}
             className={`
-              flex items-center ${isDesktopCollapsed ? 'md:justify-center' : 'gap-3'} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
               ${location.pathname === '/gemini'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
@@ -137,25 +134,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             title={isDesktopCollapsed ? 'Gemini AI' : ''}
           >
             <Bot size={18} className={`${location.pathname === '/gemini' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} whitespace-nowrap`}>Gemini AI</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Gemini AI</span>
             {location.pathname === '/gemini' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/gemini' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
         </nav>
 
-        <div className={`${isDesktopCollapsed ? 'md:p-3' : 'p-6'} shrink-0`}>
+        <div className={`p-6 ${isDesktopCollapsed ? 'md:p-3' : ''} shrink-0`}>
           <div
             onClick={() => navigate('/admin')}
-            className={`${isDesktopCollapsed ? 'md:p-2' : 'p-4'} rounded-xl bg-slate-900/50 border border-slate-700/50 cursor-pointer transition-all duration-200 hover:bg-slate-800/50 hover:border-slate-600/50 group`}
+            className={`p-4 ${isDesktopCollapsed ? 'md:p-2' : ''} rounded-xl bg-slate-900/50 border border-slate-700/50 cursor-pointer transition-all duration-200 hover:bg-slate-800/50 hover:border-slate-600/50 group`}
             title="관리자 페이지"
           >
-            <p className={`text-xs text-slate-400 mb-2 font-medium transition-all duration-300 ${isDesktopCollapsed ? 'md:h-0 md:opacity-0 md:invisible md:overflow-hidden md:mb-0' : 'md:h-auto md:opacity-100 md:visible'} group-hover:text-slate-300 whitespace-nowrap`}>서비스 상태</p>
-            <div className={`flex items-center ${isDesktopCollapsed ? 'md:justify-center' : 'gap-2'}`}>
+            <p className={`text-xs text-slate-400 mb-2 font-medium transition-all duration-300 ${isDesktopCollapsed ? 'md:h-0 md:opacity-0 md:invisible md:overflow-hidden md:mb-0' : ''} group-hover:text-slate-300 whitespace-nowrap`}>서비스 상태</p>
+            <div className={`flex items-center gap-2 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''}`}>
               <span className="relative flex h-2.5 w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
               </span>
-              <span className={`text-sm font-semibold text-slate-200 transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} group-hover:text-slate-100 whitespace-nowrap`}>정상 작동 중</span>
+              <span className={`text-sm font-semibold text-slate-200 transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} group-hover:text-slate-100 whitespace-nowrap`}>정상 작동 중</span>
             </div>
           </div>
         </div>
