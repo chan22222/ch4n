@@ -16,6 +16,7 @@ import {
   Instagram,
   Briefcase,
   Package,
+  Camera,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -32,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Auto collapse/expand based on route
   React.useEffect(() => {
-    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago') {
+    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago' || location.pathname === '/photo') {
       setIsDesktopCollapsed(true);
     } else if (location.pathname === '/') {
       setIsDesktopCollapsed(false);
@@ -163,6 +164,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
+            to="/photo"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/photo'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? '사진값 변환 & 모자이크' : ''}
+          >
+            <Camera size={18} className={`${location.pathname === '/photo' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>사진값 변환 & 모자이크</span>
+            {location.pathname === '/photo' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/photo' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
             to="/currency"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -188,10 +206,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'ReelStash (릴스 저장소)' : ''}
+            title={isDesktopCollapsed ? '릴스 저장소(ReelStash)' : ''}
           >
             <Instagram size={18} className={`${location.pathname === '/reelstash' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>ReelStash (릴스 저장소)</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>릴스 저장소(ReelStash)</span>
             {location.pathname === '/reelstash' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/reelstash' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
@@ -205,10 +223,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'IP Intelligence' : ''}
+            title={isDesktopCollapsed ? 'IP 정보 추적기' : ''}
           >
             <Shield size={18} className={`${location.pathname === '/iptracker' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>IP Intelligence</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>IP 정보 추적기</span>
             {location.pathname === '/iptracker' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/iptracker' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
