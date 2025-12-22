@@ -5,6 +5,10 @@ import Dashboard from './components/Dashboard';
 import ProtectedAdmin from './components/ProtectedAdmin';
 import Currency from './components/Currency';
 import Gemini from './components/Gemini';
+import Portfolio from './components/Portfolio';
+import ReelStash from './components/ReelStash';
+import IpTracker from './components/IpTracker';
+import Shipdago from './components/Shipdago';
 
 const App: React.FC = () => {
 
@@ -15,6 +19,10 @@ const App: React.FC = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/currency" element={<Currency />} />
           <Route path="/gemini" element={<Gemini />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/reelstash" element={<ReelStash />} />
+          <Route path="/iptracker" element={<IpTracker />} />
+          <Route path="/shipdago" element={<Shipdago />} />
           <Route path="/admin" element={<ProtectedAdmin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

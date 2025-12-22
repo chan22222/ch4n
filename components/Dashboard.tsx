@@ -16,9 +16,6 @@ import {
   Droplets,
   Thermometer,
   Briefcase,
-  Lock,
-  Eye,
-  EyeOff,
 } from 'lucide-react';
 import { getApiUrl } from '../config/api';
 
@@ -27,10 +24,6 @@ const Dashboard: React.FC = () => {
   const [weather, setWeather] = useState<any>(null);
   const [weatherError, setWeatherError] = useState<boolean>(false);
   const [lastWeatherFetch, setLastWeatherFetch] = useState<number>(0);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [passwordError, setPasswordError] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [clientInfo, setClientInfo] = useState({
     browser: 'Unknown',
     os: 'Unknown',
@@ -662,121 +655,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="h-full overflow-y-auto bg-[#0f172a] text-slate-200">
-      {/* Password Modal */}
-      {showPasswordModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md">
-            <div className="bg-surface border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden">
-              <div className="bg-gradient-to-r from-slate-800 to-slate-900 p-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center">
-                    <Lock className="text-primary" size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-white">포트폴리오 접속</h2>
-                    <p className="text-sm text-slate-400">비밀번호를 입력하세요</p>
-                  </div>
-                </div>
-              </div>
-
-              <form
-                id="portfolio-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (passwordInput === '1213') {
-                    window.open('https://ch4n.co.kr/portfolio', '_blank');
-                    setShowPasswordModal(false);
-                    setPasswordInput('');
-                    setShowPassword(false);
-                    setPasswordError(false);
-                  } else {
-                    setPasswordError(true);
-                    // 실패시 진동 효과
-                    const form = document.getElementById('portfolio-form');
-                    if (form) {
-                      form.classList.add('animate-shake');
-                      setTimeout(() => form.classList.remove('animate-shake'), 500);
-                    }
-                  }
-                }}
-                className="p-6 space-y-4"
-              >
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-400">비밀번호</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={passwordInput}
-                      onChange={(e) => {
-                        setPasswordInput(e.target.value);
-                        setPasswordError(false);
-                      }}
-                      className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-primary transition-colors"
-                      placeholder="••••••••"
-                      autoFocus
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-300"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                  </div>
-                </div>
-
-                {passwordError && (
-                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
-                    비밀번호가 올바르지 않습니다
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-colors"
-                >
-                  확인
-                </button>
-
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowPasswordModal(false);
-                      setPasswordInput('');
-                      setPasswordError(false);
-                      setShowPassword(false);
-                    }}
-                    className="text-sm text-slate-500 hover:text-slate-400 transition-colors"
-                  >
-                    취소
-                  </button>
-                </div>
-
-                <div className="text-center text-xs text-slate-500">
-                  <p>보안 연결</p>
-                </div>
-              </form>
-            </div>
-
-            <div className="mt-4 text-center text-xs text-slate-600">
-              <p>개발자 포트폴리오 페이지입니다</p>
-            </div>
-          </div>
-
-          <style>{`
-            @keyframes shake {
-              0%, 100% { transform: translateX(0); }
-              10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-              20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-            .animate-shake {
-              animation: shake 0.5s ease-in-out;
-            }
-          `}</style>
-        </div>
-      )}
 
       <div className="min-h-full flex flex-col justify-center">
         <div className="max-w-6xl mx-auto w-full p-4 md:p-8 space-y-6 pt-8 md:pt-8 md:-mt-8">
@@ -803,10 +681,7 @@ const Dashboard: React.FC = () => {
               <div className="flex-shrink-0">
                 <button
                   onClick={() => {
-                    setShowPasswordModal(true);
-                    setPasswordInput('');
-                    setPasswordError(false);
-                    setShowPassword(false);
+                    window.open('https://ch4n.co.kr/portfolio', '_blank');
                   }}
                   className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-600 text-slate-200 rounded-lg transition-colors duration-200"
                 >

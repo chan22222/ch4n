@@ -13,6 +13,9 @@ import {
   Calculator,
   FileText,
   Settings,
+  Instagram,
+  Briefcase,
+  Package,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -29,7 +32,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Auto collapse/expand based on route
   React.useEffect(() => {
-    if (location.pathname === '/currency' || location.pathname === '/gemini') {
+    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago') {
       setIsDesktopCollapsed(true);
     } else if (location.pathname === '/') {
       setIsDesktopCollapsed(false);
@@ -74,8 +77,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         <div className={`p-6 ${isDesktopCollapsed ? 'md:p-4' : 'md:p-6'} flex items-center justify-between shrink-0`}>
           <div className={`flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:w-full md:gap-0' : ''}`}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/20 shrink-0">
-              C
+            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
+              <img src="/ch4n_logo.png" alt="ch4n logo" className="w-full h-full object-contain" />
             </div>
             <div className={`transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : 'md:w-auto md:opacity-100 md:visible'} hidden md:block`}>
               <h1 className="font-bold text-lg tracking-tight whitespace-nowrap">ch4n.co.kr</h1>
@@ -106,6 +109,60 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
+            to="/portfolio"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/portfolio'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? '개발자 포트폴리오' : ''}
+          >
+            <Briefcase size={18} className={`${location.pathname === '/portfolio' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>개발자 포트폴리오</span>
+            {location.pathname === '/portfolio' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/portfolio' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          {/* 구분선 */}
+          <div className="my-2 mx-4 border-t border-slate-700/50"></div>
+
+          <NavLink
+            to="/gemini"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/gemini'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'Gemini AI' : ''}
+          >
+            <Bot size={18} className={`${location.pathname === '/gemini' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Gemini AI</span>
+            {location.pathname === '/gemini' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/gemini' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
+            to="/shipdago"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/shipdago'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'Shipdago.com' : ''}
+          >
+            <Package size={18} className={`${location.pathname === '/shipdago' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Shipdago.com</span>
+            {location.pathname === '/shipdago' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/shipdago' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
             to="/currency"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -123,20 +180,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
-            to="/gemini"
+            to="/reelstash"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
-              ${location.pathname === '/gemini'
+              ${location.pathname === '/reelstash'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'Gemini AI' : ''}
+            title={isDesktopCollapsed ? 'ReelStash (릴스 저장소)' : ''}
           >
-            <Bot size={18} className={`${location.pathname === '/gemini' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Gemini AI</span>
-            {location.pathname === '/gemini' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
-            {location.pathname === '/gemini' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            <Instagram size={18} className={`${location.pathname === '/reelstash' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>ReelStash (릴스 저장소)</span>
+            {location.pathname === '/reelstash' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/reelstash' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
+            to="/iptracker"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/iptracker'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'IP Intelligence' : ''}
+          >
+            <Shield size={18} className={`${location.pathname === '/iptracker' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>IP Intelligence</span>
+            {location.pathname === '/iptracker' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/iptracker' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
         </nav>
 
@@ -163,8 +237,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Header (Mobile) */}
         <header className="h-16 flex items-center justify-between px-6 border-b border-slate-800 md:hidden bg-surface/50 backdrop-blur-md sticky top-0 z-10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-bold text-xl shadow-lg shadow-primary/20">
-              C
+            <div className="w-10 h-10 rounded-xl overflow-hidden">
+              <img src="/ch4n_logo.png" alt="ch4n logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="font-bold text-lg tracking-tight">ch4n.co.kr</h1>

@@ -15,7 +15,16 @@
       "Bash(npm run dev)",
       "Bash(git config:*)",
       "Bash(del \"C:\\Users\\CHAN2\\Music\\cord\\ch4n\\components\\NetworkSpeed.tsx\")",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(where:*)",
+      "Bash(del \"C:\\Users\\CHAN2\\Music\\cord\\ch4n\\public\\ads.txt\")",
+      "Bash(findstr:*)",
+      "Bash(del \"C:\\Users\\CHAN2\\Music\\cord\\ch4n\\public\\gude-2025-12-10.log\")",
+      "Bash(nul)",
+      "WebFetch(domain:ch4n.co.kr)",
+      "Bash(rd /s /q dist)",
+      "Bash(del nul)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

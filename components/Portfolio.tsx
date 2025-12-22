@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
-const Currency: React.FC = () => {
+const Portfolio: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -10,14 +10,14 @@ const Currency: React.FC = () => {
       {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-background z-10 pointer-events-none">
           <Loader2 className="w-8 h-8 text-primary animate-spin mb-4" />
-          <p className="text-slate-400 text-sm animate-pulse">불러오는 중... Currency</p>
+          <p className="text-slate-400 text-sm animate-pulse">불러오는 중... Portfolio</p>
         </div>
       )}
 
       {/* Iframe */}
       <iframe
-        src="https://ch4n.co.kr/currency"
-        title="Currency Exchange"
+        src="https://ch4n.co.kr/portfolio/"
+        title="Portfolio"
         className="absolute inset-0 w-full h-full border-0"
         onLoad={() => setIsLoading(false)}
         style={{
@@ -29,4 +29,4 @@ const Currency: React.FC = () => {
   );
 };
 
-export default Currency;
+export default Portfolio;
