@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import {
   Briefcase,
   Package,
   Camera,
+  Video,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -26,19 +27,35 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+  const [autoCollapse, setAutoCollapse] = useState(() => {
+    const saved = localStorage.getItem('sidebarAutoCollapse');
+    return saved === null ? true : saved === 'true';
+  });
   const location = useLocation();
   const navigate = useNavigate();
+  const prevPathRef = useRef(location.pathname);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  // Auto collapse/expand based on route
-  React.useEffect(() => {
-    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago' || location.pathname === '/photo') {
+  const toggleAutoCollapse = () => {
+    const newValue = !autoCollapse;
+    setAutoCollapse(newValue);
+    localStorage.setItem('sidebarAutoCollapse', String(newValue));
+  };
+
+  // Auto collapse/expand based on route (only on actual route change)
+  useEffect(() => {
+    if (prevPathRef.current === location.pathname) return;
+    prevPathRef.current = location.pathname;
+
+    if (!autoCollapse) return;
+
+    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago' || location.pathname === '/photo' || location.pathname === '/metagrabber') {
       setIsDesktopCollapsed(true);
     } else if (location.pathname === '/') {
       setIsDesktopCollapsed(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, autoCollapse]);
 
   return (
     <div className="flex h-screen bg-background overflow-hidden text-slate-100 font-sans">
@@ -181,6 +198,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
+            to="/metagrabber"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/metagrabber'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'MetaGrabber (영상 스크랩)' : ''}
+          >
+            <Video size={18} className={`${location.pathname === '/metagrabber' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>MetaGrabber (영상 스크랩)</span>
+            {location.pathname === '/metagrabber' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/metagrabber' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
             to="/currency"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
@@ -232,7 +266,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
         </nav>
 
-        <div className={`p-6 ${isDesktopCollapsed ? 'md:p-3' : ''} shrink-0`}>
+        <div className={`p-6 ${isDesktopCollapsed ? 'md:p-3' : ''} shrink-0 space-y-2`}>
+          {/* 자동접기 토글 */}
+          <button
+            onClick={toggleAutoCollapse}
+            className="hidden md:flex items-center justify-center gap-2 w-full py-1.5 text-slate-500 hover:text-slate-400 transition-colors duration-200"
+            title={autoCollapse ? '탭이동시 자동접기 ON' : '탭이동시 자동접기 OFF'}
+          >
+            <div className={`w-7 h-4 rounded-full shrink-0 ${autoCollapse ? 'bg-primary/60' : 'bg-slate-700'} relative flex items-center transition-colors duration-200`}>
+              <span className={`w-2.5 h-2.5 rounded-full bg-slate-200 absolute transition-[left] duration-200 ${autoCollapse ? 'left-[14px]' : 'left-[2px]'}`} />
+            </div>
+            {!isDesktopCollapsed && (
+              <span className="text-[10px] whitespace-nowrap">탭이동시 네비게이터 자동접기</span>
+            )}
+          </button>
+
           <div
             onClick={() => navigate('/admin')}
             className={`p-4 ${isDesktopCollapsed ? 'md:p-2' : ''} rounded-xl bg-slate-900/50 border border-slate-700/50 cursor-pointer transition-all duration-200 hover:bg-slate-800/50 hover:border-slate-600/50 group`}
