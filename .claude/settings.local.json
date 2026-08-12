@@ -24,7 +24,8 @@
       "WebFetch(domain:ch4n.co.kr)",
       "Bash(rd /s /q dist)",
       "Bash(del nul)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "PowerShell(npm run *)"
     ],
     "deny": [],
     "ask": []

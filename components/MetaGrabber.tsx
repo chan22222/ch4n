@@ -16,7 +16,7 @@ const MetaGrabber: React.FC = () => {
 
       {/* Iframe */}
       <iframe
-        src="https://metagrabber-production.up.railway.app/"
+        src="https://metagrab-production.up.railway.app/"
         title="MetaGrabber"
         className="absolute inset-0 w-full h-full border-0"
         onLoad={() => setIsLoading(false)}

@@ -18,6 +18,9 @@ import {
   Package,
   Camera,
   Video,
+  Shuffle,
+  Grid3x3,
+  Users,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -50,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     if (!autoCollapse) return;
 
-    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago' || location.pathname === '/photo' || location.pathname === '/metagrabber') {
+    if (location.pathname === '/currency' || location.pathname === '/gemini' || location.pathname === '/virtualmeeting' || location.pathname === '/reelstash' || location.pathname === '/portfolio' || location.pathname === '/iptracker' || location.pathname === '/shipdago' || location.pathname === '/shuffleslash' || location.pathname === '/photo' || location.pathname === '/metagrabber' || location.pathname === '/spritfy') {
       setIsDesktopCollapsed(true);
     } else if (location.pathname === '/') {
       setIsDesktopCollapsed(false);
@@ -164,20 +167,37 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
-            to="/shipdago"
+            to="/virtualmeeting"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
-              ${location.pathname === '/shipdago'
+              ${location.pathname === '/virtualmeeting'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'Shipdago.com' : ''}
+            title={isDesktopCollapsed ? 'Virtual Meeting' : ''}
           >
-            <Package size={18} className={`${location.pathname === '/shipdago' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Shipdago.com</span>
-            {location.pathname === '/shipdago' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
-            {location.pathname === '/shipdago' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            <Users size={18} className={`${location.pathname === '/virtualmeeting' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Virtual Meeting</span>
+            {location.pathname === '/virtualmeeting' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/virtualmeeting' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
+            to="/metagrabber"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/metagrabber'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'MetaGrabber (영상 추출)' : ''}
+          >
+            <Video size={18} className={`${location.pathname === '/metagrabber' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>MetaGrabber (영상 추출)</span>
+            {location.pathname === '/metagrabber' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/metagrabber' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
 
           <NavLink
@@ -198,20 +218,54 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </NavLink>
 
           <NavLink
-            to="/metagrabber"
+            to="/spritfy"
             className={`
               flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
-              ${location.pathname === '/metagrabber'
+              ${location.pathname === '/spritfy'
                 ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'MetaGrabber (영상 스크랩)' : ''}
+            title={isDesktopCollapsed ? 'Spritfy (픽셀아트)' : ''}
           >
-            <Video size={18} className={`${location.pathname === '/metagrabber' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>MetaGrabber (영상 스크랩)</span>
-            {location.pathname === '/metagrabber' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
-            {location.pathname === '/metagrabber' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            <Grid3x3 size={18} className={`${location.pathname === '/spritfy' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Spritfy (픽셀아트)</span>
+            {location.pathname === '/spritfy' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/spritfy' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
+            to="/shipdago"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/shipdago'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'Shipdago (무역 툴)' : ''}
+          >
+            <Package size={18} className={`${location.pathname === '/shipdago' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Shipdago (무역 툴)</span>
+            {location.pathname === '/shipdago' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/shipdago' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+          </NavLink>
+
+          <NavLink
+            to="/shuffleslash"
+            className={`
+              flex items-center gap-3 ${isDesktopCollapsed ? 'md:justify-center md:gap-0' : ''} px-4 py-3 rounded-xl transition-all duration-200 group relative
+              ${location.pathname === '/shuffleslash'
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
+              }
+            `}
+            title={isDesktopCollapsed ? 'Shuffle & Slash' : ''}
+          >
+            <Shuffle size={18} className={`${location.pathname === '/shuffleslash' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>Shuffle & Slash</span>
+            {location.pathname === '/shuffleslash' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
+            {location.pathname === '/shuffleslash' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
 
           <NavLink
@@ -240,10 +294,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? '릴스 저장소(ReelStash)' : ''}
+            title={isDesktopCollapsed ? 'ReelStash (릴스 저장소)' : ''}
           >
             <Instagram size={18} className={`${location.pathname === '/reelstash' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>릴스 저장소(ReelStash)</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>ReelStash (릴스 저장소)</span>
             {location.pathname === '/reelstash' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/reelstash' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
@@ -257,10 +311,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-700/30'
               }
             `}
-            title={isDesktopCollapsed ? 'IP 정보 추적기' : ''}
+            title={isDesktopCollapsed ? 'IP Intelligence' : ''}
           >
             <Shield size={18} className={`${location.pathname === '/iptracker' ? 'text-primary' : 'text-slate-500 group-hover:text-slate-300'} shrink-0`} />
-            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>IP 정보 추적기</span>
+            <span className={`font-medium text-sm transition-all duration-300 ${isDesktopCollapsed ? 'md:w-0 md:opacity-0 md:invisible md:overflow-hidden' : ''} whitespace-nowrap`}>IP Intelligence</span>
             {location.pathname === '/iptracker' && !isDesktopCollapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
             {location.pathname === '/iptracker' && isDesktopCollapsed && <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary md:block hidden" />}
           </NavLink>
